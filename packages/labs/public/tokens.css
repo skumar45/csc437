@@ -1,0 +1,25 @@
+:root {
+    /* Color Tokens */
+    --color-background: #EEEBE8;
+    --color-text: #5C5B2D;
+    --color-nav-background: #C4D6E0;
+    --color-heading: #0D3B48;
+    --color-link: #674445;
+    --color-link-hover: black;
+
+    /* Font Tokens */
+    --font-family-primary: "Lato", serif;
+    --font-family-secondary: "Pacifico", serif;
+    --font-weight-regular: 400;
+    --font-style-normal: normal;
+
+    /* Font Size Tokens */
+    --font-size-h1: 3em;
+    --font-size-h2: 2em;
+    --font-size-footer: 0.7em;
+
+    /* Spacing Tokens */
+    --spacing-padding: 1em;
+    --spacing-margin-footer: 2em 2em 2em 0;
+    --spacing-list-item-padding-top: 0.7em;
+}

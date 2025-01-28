@@ -1,0 +1,96 @@
+
+
+body {
+   background-color: var(--color-background);
+   color: var(--color-text);
+   font-family: var(--font-family-primary);
+   font-weight: var(--font-weight-regular);
+   font-style: var(--font-style-normal);
+}
+
+
+nav {
+    display: flex;
+    background-color: var(--color-nav-background);
+    align-items: center;
+    grid-column: 1 / -1;
+}
+
+main {
+    grid-column: 1 / 3;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0;
+}
+
+.about, .dog {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    margin-left: 0;
+}
+
+.contact, .hobbies {
+    grid-column: 1 / 2;
+}
+
+img {
+    grid-column: 1 / 2;
+    padding: 2em;
+    align-self: center;
+}
+
+.pacifico-regular {
+    font-family: var(--font-family-secondary);
+    font-weight: var(--font-weight-regular);
+    font-style: var(--font-style-normal);
+  }
+
+.lato-regular {
+    font-family: var(--font-family-primary);
+    font-weight: var(--font-weight-regular);
+    font-style: var(--font-style-normal);
+}  
+
+h1 {
+    font-family: var(--font-family-secondary);
+    font-weight: var(--font-weight-regular);
+    font-style: var(--font-style-normal);
+    font-size: var(--font-size-h1);
+    color: var(--color-heading);
+}
+
+h2 {
+    font-family: var(--font-family-secondary);
+    font-weight: var(--font-weight-regular);
+    font-style: var(--font-style-normal);
+    font-size: var(--font-size-h2);
+}
+
+ul li {
+    padding-top: 0.7em;
+}
+
+dl {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0;
+}
+
+dd {
+    text-align: left;
+}
+
+a:hover {
+    color: var(--color-link-hover);
+}
+
+a {
+    color: var(--color-link);
+    padding: 1em;
+}
+
+footer {
+    font-size: 0.7em;
+    margin: 2em 2em 2em 0;
+    grid-column: 1 / -1;
+}
