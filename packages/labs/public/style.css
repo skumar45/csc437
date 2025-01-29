@@ -9,11 +9,46 @@ body {
 }
 
 
-nav {
+.nav {
     display: flex;
     background-color: var(--color-nav-background);
     align-items: center;
     grid-column: 1 / -1;
+}
+.nav-list {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Individual nav items */
+.nav-item {
+    display: inline;
+}
+
+/* Anchor (nav-link) styles */
+.nav-link {
+    color: white; /* White text color */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold;
+    padding: 5px 10px;
+    transition: color 0.3s ease-in-out;
+}
+
+/* Hover effect */
+.nav-link:hover {
+    text-decoration: underline;
+    color: #ffcc00; /* Change text color on hover */
+}
+
+.nav-heading {
+    font-family: var(--font-family-secondary);
+    font-weight: var(--font-weight-regular);
+    font-style: var(--font-style-normal);
+    font-size: var(--font-size-h1);
+    color: var(--color-heading);
 }
 
 main {
