@@ -1,46 +1,45 @@
 console.log("hello");
 
 
+export function toHtmlElement(htmlString) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    return doc.body.firstElementChild;
+}
 
- function createNavbar(){
-    const navbar = document.createElement("nav");
-    navbar.classList.add("nav");
-
-    const heading = document.createElement("h1");
-    heading.textContent = "Saiyushi Kumar";
-    heading.classList.add("nav-heading");
-
-    const navList = document.createElement("ul");
-    navList.classList.add("nav-list");
-
-    const links = [
-        { text: "Home", href: "index.html" },
-        { text: "Hobbies", href: "hobbies.html"}
-    ];
-
-    links.forEach(link => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("nav-item");
-
-        const anchor = document.createElement("a");
-        anchor.href = link.href;
-        anchor.textContent = link.text;
-        anchor.classList.add("nav-link");
-
-        listItem.appendChild(anchor);
-        navList.appendChild(listItem);
-    });
-
-    navbar.appendChild(navList);
-
-    window.addEventListener("load", () => { 
-        const oldNavbar = document.querySelector(".navbar");
+function createNavbar() {
+    const navbar = toHtmlElement(`
+        <nav class="nav">
+            <h1 class="nav-heading">Saiyushi Kumar</h1>
+            <ul class="nav-list">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="hobbies.html" class="nav-link">Hobbies</a></li>
+            </ul>
+        </nav>
+    `);
+    
+    window.addEventListener("load", () => {
+        const oldNavbar = shadowRoot.querySelector(".nav");
         if (oldNavbar) {
             oldNavbar.replaceWith(navbar);
         } else {
-            // Insert the new navbar at the top of the body
             document.body.prepend(navbar);
+        }
+
+        highlightActiveLink();
+    });
+}
+function highlightActiveLink() {
+    const currentUrl = window.location.pathname;  // Get current URL path
+    const links = shadowRoot.querySelectorAll('.nav-link');  // Get all nav links
+    
+    links.forEach(link => {
+        if (link.href.endsWith(currentUrl)) {  // Match the link's href with the current page
+            link.classList.add('active');  // Add 'active' class to the matching link
+        } else {
+            link.classList.remove('active');  // Ensure others are not highlighted
         }
     });
 }
+
 createNavbar();

@@ -23,3 +23,12 @@
     --spacing-margin-footer: 2em 2em 2em 0;
     --spacing-list-item-padding-top: 0.7em;
 }
+
+body.dark-mode {
+    --color-nav-background: #636363;
+    --color-background: #141414;
+    --color-text: white;
+    --color-link: #C4D6E0;
+    --color-heading: white;
+}
+

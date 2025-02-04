@@ -15,6 +15,7 @@ body {
     align-items: center;
     grid-column: 1 / -1;
 }
+
 .nav-list {
     list-style: none;
     display: flex;
@@ -37,10 +38,10 @@ body {
     transition: color 0.3s ease-in-out;
 }
 
-/* Hover effect */
-.nav-link:hover {
-    text-decoration: underline;
-    color: #ffcc00; /* Change text color on hover */
+
+.nav-link.active {
+    color: var(--color-heading);
+    border-bottom: 3px solid var(--color-heading);
 }
 
 .nav-heading {
@@ -128,4 +129,9 @@ footer {
     font-size: 0.7em;
     margin: 2em 2em 2em 0;
     grid-column: 1 / -1;
+}
+
+/* desktop style*/
+@media (min-width: 768px) {
+    
 }
