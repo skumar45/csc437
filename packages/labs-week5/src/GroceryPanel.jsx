@@ -2,6 +2,7 @@ import "./index.css";
 import React, { useState, useEffect } from "react";
 import { Spinner } from "./components/Spinner";
 import { groceryFetcher } from "./groceryFetcher";
+import { useGroceryFetch } from "./useGroceryFetch";
 
 const MDN_URL = "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json";
 
@@ -16,10 +17,8 @@ function delayMs(ms) {
 }
 
 export function GroceryPanel(props) {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [groceryData, setGroceryData] = useState([]);
     const [selectedStore, setSelectedStore] = useState("MDN");
+    const { groceryData, isLoading, error } = useGroceryFetch(selectedStore);
 
     function handleAddTodoClicked(item) {
         const todoName = `Buy ${item.name} (${item.price.toFixed(2)})`;
@@ -32,35 +31,6 @@ export function GroceryPanel(props) {
         setError(null);
     }
 
-    useEffect(() => {
-        if (!selectedStore) {
-            setGroceryData([]);
-            return;
-        }
-
-        let isStale = false;
-
-        async function fetchData() {
-            setError(null);
-            setIsLoading(true);
-            setGroceryData([]);
-        
-            try {
-                const data = await groceryFetcher.fetch(selectedStore);
-                if (!isStale) setGroceryData(data); 
-            } catch {
-                if (!isStale) setError("Error fetching data");
-            } finally {
-                if (!isStale) setIsLoading(false);
-            }
-        }
-        fetchData();
-        return () => {
-            isStale=true;
-        };
-    }, [selectedStore]);
-
-    
     
     return (
         <div>
