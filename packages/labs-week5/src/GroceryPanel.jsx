@@ -1,6 +1,7 @@
 import "./index.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Spinner } from "./components/Spinner";
+import { groceryFetcher } from "./groceryFetcher";
 
 const MDN_URL = "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json";
 
@@ -17,7 +18,8 @@ function delayMs(ms) {
 export function GroceryPanel(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [groceryData, setGroceryData] = useState(false);
+    const [groceryData, setGroceryData] = useState([]);
+    const [selectedStore, setSelectedStore] = useState("MDN");
 
     function handleAddTodoClicked(item) {
         const todoName = `Buy ${item.name} (${item.price.toFixed(2)})`;
@@ -26,50 +28,40 @@ export function GroceryPanel(props) {
 
     function handleDropdownChange(changeEvent ) {
         const selectedURL = changeEvent.target.value;
+        setSelectedStore(selectedURL);
         setError(null);
-       
-        if (selectedURL === "") {
+    }
+
+    useEffect(() => {
+        if (!selectedStore) {
             setGroceryData([]);
+            return;
         }
-        
-        else if (selectedURL === "invalid") {
-            setGroceryData([]);
+
+        let isStale = false;
+
+        async function fetchData() {
+            setError(null);
             setIsLoading(true);
-            delayMs(2000)
-                .then(() => {
-                setError("Sorry, something went wrong");
-                setIsLoading(false);
-                });
-        }
-        else {
             setGroceryData([]);
-            fetchData(selectedURL);
-        }
-    }
-
-    async function fetchData(url) {
-        setError(null);
-        setIsLoading(true);
-
-        try {
-            
-            await delayMs(2000);
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
+        
+            try {
+                const data = await groceryFetcher.fetch(selectedStore);
+                if (!isStale) setGroceryData(data); 
+            } catch {
+                if (!isStale) setError("Error fetching data");
+            } finally {
+                if (!isStale) setIsLoading(false);
             }
-
-            const data = await response.json();
-            setGroceryData(data);
-
-        } catch (error) {
-            setError(`Error fetching data`);
-        } finally {
-            setIsLoading(false);
         }
-    }
+        fetchData();
+        return () => {
+            isStale=true;
+        };
+    }, [selectedStore]);
 
+    
+    
     return (
         <div>
             <h1 className="text-xl font-bold">Groceries prices today</h1>
@@ -82,11 +74,15 @@ export function GroceryPanel(props) {
                 <select 
                     className="border border-gray-300 p-1 rounded-sm disabled:opacity-50"
                     disabled={isLoading}
+                    value={selectedStore}
                     onChange={handleDropdownChange}
                 >
                     <option value="">(None selected)</option>
-                    <option value={MDN_URL}>MDN</option>
+                    <option value="MDN">MDN</option>
                     <option value="invalid">Who knows?</option>
+                    <option value="Liquor store">Liquor store</option>
+                    <option value="Butcher">Butcher</option>
+                    
                 </select>
                 )}
                 {error && <span className="text-red-500 ml-2">{error}</span>}
