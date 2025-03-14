@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId, Collection } from "mongodb";
+import { MongoClient, ObjectId, Collection, Filter, UpdateResult } from "mongodb";
 
 export class ImageProvider {
     private imagesCollection: Collection<Image>;
@@ -19,8 +19,12 @@ export class ImageProvider {
         this.usersCollection = this.mongoClient.db().collection<User>(usersCollectionName); // Initialize users collection
     }
 
-    async getAllImages(): Promise<DenormalizedImage[]> {
-        const images = await this.imagesCollection.find().toArray();
+    async getAllImages(authorId?: string): Promise<DenormalizedImage[]> {
+        let filter: Filter<Image> = {};
+        if (authorId) {
+            filter = { author: authorId };
+        }
+        const images = await this.imagesCollection.find(filter).toArray();
         const denormalizedImages: DenormalizedImage[] = await Promise.all(
             images.map(async (image) => {
                 const user = await this.usersCollection.findOne({ _id: image.author}); // Assuming author is _id
@@ -31,6 +35,19 @@ export class ImageProvider {
             })
         );
         return denormalizedImages;
+    }
+
+    async updateImageName(imageId: string, newName: string): Promise<number> {
+        try {
+            const updateResult: UpdateResult = await this.imagesCollection.updateOne(
+                { _id: imageId },
+                { $set: { name: newName } }
+            );
+            return updateResult.matchedCount;
+        } catch (error) {
+            console.error("Error updating image name:", error);
+            return 0; // Or throw an error if you want to propagate it
+        }
     }
 }
 

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { MongoClient } from "mongodb";
 import { ImageProvider } from "./ImageProvider";
+import {registerImageRoutes} from "./routes/images"
 
 
 dotenv.config(); // Read the .env file in the current working directory, and load values into process.env.
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 const staticDir = process.env.STATIC_DIR || "public";
 const app = express();
 
+app.use(express.json());
 app.use(express.static(staticDir));
 
 async function setUpServer() {
@@ -18,7 +20,7 @@ async function setUpServer() {
         const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER, DB_NAME, IMAGES_COLLECTION_NAME } = process.env;
         
        
-        const connectionStringRedacted = `mongodb+srv://${MONGO_USER}:<password>@${MONGO_CLUSTER}/${DB_NAME}`;
+        const connectionStringRedacted = `mongodb+srv://${MONGO_USER}:410gI40RRW0U2v9l@${MONGO_CLUSTER}/${DB_NAME}`;
         const connectionString = `mongodb+srv://${MONGO_USER}:${MONGO_PWD}@${MONGO_CLUSTER}/${DB_NAME}`;
 
         console.log("Attempting Mongo connection at " + connectionStringRedacted);
@@ -28,21 +30,10 @@ async function setUpServer() {
         const mongoClient = await MongoClient.connect(connectionString);
         /*const collectionInfos = await mongoClient.db().listCollections().toArray();
         console.log("Collections:", collectionInfos.map(info => info.name));*/
-
-        const imageProvider = new ImageProvider(mongoClient);
-
+        registerImageRoutes(app, mongoClient);
+       
         app.get("/hello", (req: Request, res: Response) => {
             res.send("Hello, World");
-        });
-
-        app.get("/api/images", async (req: Request, res: Response) => {
-            try {
-                const images = await imageProvider.getAllImages();
-                res.json(images); // Send JSON response with image data
-            } catch (error) {
-                console.error("Error fetching images:", error);
-                res.status(500).json({ error: "Could not fetch images" });
-            }
         });
 
         // Start the Express server
@@ -56,3 +47,6 @@ async function setUpServer() {
 
 // Call the async function to start everything
 setUpServer();
+
+//sendFile("index.html, {root: staticDir}}")
+//left on add an update API step
