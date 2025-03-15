@@ -36,7 +36,7 @@ const IMAGES = [
  * @param delay {number} the number of milliseconds fetching will take
  * @returns {{isLoading: boolean, fetchedImages: ImageData[]}} fetch state and data
  */
-export function useImageFetching(imageId, delay=1000) {
+/*export function useImageFetching(imageId, delay=1000) {
     const [isLoading, setIsLoading] = useState(true);
     const [fetchedImages, setFetchedImages] = useState([]);
     useEffect(() => {
@@ -51,4 +51,40 @@ export function useImageFetching(imageId, delay=1000) {
     }, [imageId]);
 
     return { isLoading, fetchedImages };
+}*/
+export function useImageFetching() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [fetchedImages, setFetchedImages] = useState([]);
+
+    // Function to fetch images
+    const fetchImages = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch("/api/images");
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            let data = await response.json();
+
+            // Convert _id to id
+            data = data.map(image => ({
+                ...image,
+                id: image._id,
+            }));
+
+            setFetchedImages(data);
+        } catch (error) {
+            console.error("Error fetching images:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch images on mount
+    useEffect(() => {
+        fetchImages();
+    }, []);
+
+    return { isLoading, fetchedImages, fetchImages };
 }
+

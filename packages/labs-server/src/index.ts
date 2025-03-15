@@ -4,9 +4,10 @@ import path from "path";
 import { MongoClient } from "mongodb";
 import { ImageProvider } from "./ImageProvider";
 import {registerImageRoutes} from "./routes/images"
+import { registerAuthRoutes } from "./routes/auth";
+import { verifyAuthToken } from "./routes/auth";
 
-
-dotenv.config(); // Read the .env file in the current working directory, and load values into process.env.
+dotenv.config(); 
 
 const PORT = process.env.PORT || 3000;
 const staticDir = process.env.STATIC_DIR || "public";
@@ -30,6 +31,10 @@ async function setUpServer() {
         const mongoClient = await MongoClient.connect(connectionString);
         /*const collectionInfos = await mongoClient.db().listCollections().toArray();
         console.log("Collections:", collectionInfos.map(info => info.name));*/
+        registerAuthRoutes(app, mongoClient);
+
+        app.use("/api/*", verifyAuthToken);
+
         registerImageRoutes(app, mongoClient);
        
         app.get("/hello", (req: Request, res: Response) => {
@@ -49,4 +54,3 @@ async function setUpServer() {
 setUpServer();
 
 //sendFile("index.html, {root: staticDir}}")
-//left on add an update API step
